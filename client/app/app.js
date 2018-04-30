@@ -41,7 +41,7 @@ import '!file-loader?name=[name].[ext]!./manifest.json';
 import 'file-loader?name=[name].[ext]!./.htaccess'; // eslint-disable-line import/extensions
 /* eslint-enable import/no-webpack-loader-syntax */
 
-import configureStore from './configureStore';
+import configureStore from './store/configureStore';
 
 // Import i18n messages
 import { translationMessages } from './i18n';
