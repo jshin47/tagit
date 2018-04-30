@@ -6,6 +6,8 @@ import { fromJS } from 'immutable';
 import { combineReducers } from 'redux-immutable';
 import { LOCATION_CHANGE } from 'react-router-redux';
 
+import { reducer as formReducer } from 'redux-form/immutable';
+
 import globalReducer from 'containers/App/reducer';
 import languageProviderReducer from 'containers/LanguageProvider/reducer';
 
@@ -41,10 +43,16 @@ function routeReducer(state = routeInitialState, action) {
  * Creates the main reducer with the dynamically injected ones
  */
 export default function createReducer(injectedReducers) {
-  return combineReducers({
-    route: routeReducer,
+  const reducersToCombine = {
+    form: formReducer,
     global: globalReducer,
     language: languageProviderReducer,
-    ...injectedReducers,
-  });
+    route: routeReducer,
+  };
+
+  if (injectedReducers && Object.keys(injectedReducers).length > 0) {
+    reducersToCombine.ui = combineReducers(injectedReducers);
+  }
+
+  return combineReducers(reducersToCombine);
 }
