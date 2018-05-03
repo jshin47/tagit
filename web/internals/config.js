@@ -21,12 +21,22 @@ const ReactBoilerplate = {
        * by listing them here.
        */
       exclude: [
+        'body-parser',
         'chalk',
         'compression',
+        'connect-flash',
+        'connect-mongo',
+        'cors',
         'cross-env',
+        'dotenv',
         'express',
+        'express-session',
         'ip',
         'minimist',
+        'mongoose',
+        'morgan',
+        'passport',
+        'passport-local',
         'sanitize.css',
       ],
 
