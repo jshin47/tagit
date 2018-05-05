@@ -1,86 +1,58 @@
-import express from 'express';
-import session from 'express-session';
+const express = require('express');
+const morgan = require('morgan');
+const bodyParser = require('body-parser');
+const compress = require('compression');
+const methodOverride = require('method-override');
+const cors = require('cors');
+const helmet = require('helmet');
+const passport = require('passport');
+const routes = require('../api/routes/v1');
+const { logs } = require('./vars');
+const strategies = require('./passport');
+const error = require('../api/middlewares/error');
 
-import connectMongo from 'connect-mongo';
-import connectFlash from 'connect-flash';
+/**
+* Express instance
+* @public
+*/
+const app = express();
 
-import compression from 'compression';
+// request logging. dev: console | production: file
+app.use(morgan(logs));
 
-import morgan from 'morgan';
-import winston from 'winston';
+// parse body params and attache them to req.body
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
-import cookieParser from 'cookie-parser';
-import cookieSession from 'cookie-session';
-import bodyParser from 'body-parser';
-import multer from 'multer';
-import methodOverride from 'method-override';
+// gzip compression
+app.use(compress());
 
-// import csurf from 'csurf';
-import cors from 'cors';
+// lets you use HTTP verbs such as PUT or DELETE
+// in places where the client doesn't support it
+app.use(methodOverride());
 
-import config from './';
+// secure apps by setting various HTTP headers
+app.use(helmet());
 
-const env = process.env.NODE_ENV || 'development';
+// enable CORS - Cross Origin Resource Sharing
+app.use(cors());
 
-const upload = multer();
-const mongoStore = connectMongo(session);
+// enable authentication
+app.use(passport.initialize());
+passport.use('jwt', strategies.jwt);
+passport.use('facebook', strategies.facebook);
+passport.use('google', strategies.google);
 
-export default function(app, passport) {
+// mount api v1 routes
+app.use('/v1', routes);
 
-  app.use(compression({
-    threshold: 512,
-  }));
+// if error is not an instanceOf APIError, convert it.
+app.use(error.converter);
 
-  app.use(cors({
-    origin: '*',
-    optionsSuccessStatus: 200,
-    credentials: true,
-  }));
+// catch 404 and forward to error handler
+app.use(error.notFound);
 
-  // app.use(express.static(config.staticFiles));
+// error handler, send stacktrace only during development
+app.use(error.handler);
 
-  let log = 'dev';
-  if (env !== 'development') {
-    log = {
-      stream: {
-        write: message => winston.info(message)
-      }
-    };
-  }
-
-  if (env !== 'test') app.use(morgan(log));
-
-  app.use(bodyParser.json());
-  app.use(bodyParser.urlencoded({ extended: true }));
-  app.use(upload.single('image'));
-  app.use(methodOverride(function (req) {
-    if (req.body && typeof req.body === 'object' && '_method' in req.body) {
-      // look in urlencoded POST bodies and delete it
-      var method = req.body._method;
-      delete req.body._method;
-      return method;
-    }
-  }));
-
-  app.use(cookieParser());
-  app.use(cookieSession({ secret: 'secret' }));
-  app.use(session({
-    resave: false,
-    saveUninitialized: true,
-    secret: 'tagit',
-    store: new mongoStore({
-      url: config.db,
-      collection: 'sessions',
-    })
-  }));
-
-  app.use(passport.initialize());
-  app.use(passport.session());
-
-  app.use(connectFlash());
-
-  if (env === 'development') {
-    app.locals.pretty = true;
-  }
-
-}
+module.exports = app;
