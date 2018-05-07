@@ -21,6 +21,7 @@ const ReactBoilerplate = {
        * by listing them here.
        */
       exclude: [
+        'aws-sdk',
         'axios',
         'bcryptjs',
         'bluebird',
@@ -45,12 +46,14 @@ const ReactBoilerplate = {
         'joi',
         'jwt-simple',
         'lodash',
+        'md5',
         'method-override',
         'minimist',
         'moment-timezone',
         'mongoose',
         'morgan',
         'multer',
+        'multer-s3',
         'passport',
         'passport-http-bearer',
         'passport-jwt',
