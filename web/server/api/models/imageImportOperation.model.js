@@ -16,12 +16,21 @@ const imageImportOperationSchema = new mongoose.Schema({
   finishedAt: {
     type: Date,
   },
-  importedImages: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'ImportedImage',
-  }]
 }, {
   timestamps: true,
+  toJSON: {
+    virtuals: true,
+  },
+  toObject: {
+    virtuals: true,
+  }
+});
+
+imageImportOperationSchema.virtual('importedImages', {
+  ref: 'ImportedImage',
+  localField: '_id',
+  foreignField: 'importOperation',
+  justOne: false,
 });
 
 imageImportOperationSchema.statics = {
@@ -31,7 +40,7 @@ imageImportOperationSchema.statics = {
      let imageImportOperation;
 
      if (mongoose.Types.ObjectId.isValid(id)) {
-       imageImportOperation = await this.findById(id).exec();
+       imageImportOperation = await this.findById(id).populate({ path: 'importedImages' }).exec();
 
        if (imageImportOperation) {
          return imageImportOperation;

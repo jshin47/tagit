@@ -14,4 +14,27 @@ const importedImageSchema = new mongoose.Schema({
   },
 });
 
+importedImageSchema.statics = {
+  async get(id) {
+    try {
+      let importedImage;
+
+      if (mongoose.Types.ObjectId.isValid(id)) {
+        importedImage = await this.findById(id).exec();
+
+        if (importedImage) {
+          return importedImage;
+        }
+
+        throw new APIError({
+          message: 'Imported image does not exist',
+          status: httpStatus.NOT_FOUND,
+        });
+      }
+    } catch (error) {
+      throw error;
+    }
+  },
+}
+
 module.exports = mongoose.model('ImportedImage', importedImageSchema);

@@ -9,8 +9,9 @@ exports.get = async (req, res, next) => {
     const importOperation = await ImageImportOperation.get(id);
     if (importOperation) {
       res.json(importOperation);
+    } else {
+      next('Not found');
     }
-    throw new Error('not implemented!');
   } catch (e) {
     next(e);
   }
@@ -25,6 +26,32 @@ exports.create = async (req, res, next) => {
     const imageImportOperation = new ImageImportOperation(req.body);
     const savedImageImportOperation = await imageImportOperation.save();
     res.status(httpStatus.CREATED);
+    res.json(savedImageImportOperation);
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.finalizeOrUpdate = async (req, res, next) => {
+  console.log(req.query);
+  if (req.query.finalize) {
+    exports.finalize(req, res, next);
+  } else {
+    next();
+  }
+};
+
+/**
+ * Finalizes an image import operation
+ * @public
+ */
+exports.finalize = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const imageImportOperation = await ImageImportOperation.get(id);
+    imageImportOperation.finishedAt = new Date();
+    const savedImageImportOperation = await imageImportOperation.save();
+    res.status(httpStatus.OK);
     res.json(savedImageImportOperation);
   } catch (error) {
     next(error);

@@ -45,6 +45,23 @@ router
    * @apiError (Forbidden 403)    Forbidden    Only user with same id or admins can access the data
    * @apiError (Not Found 404)    NotFound     User does not exist
    */
-  .get(controller.get);
+  .get(controller.get)
+  /**
+   * @api {put} v1/imageImportOperations/:id Put Image Import Operation
+   * @apiDescription Get image import operation information
+   * @apiVersion 1.0.0
+   * @apiName GetImageImportOperation
+   * @apiGroup ImageImportOperation
+   * @apiPermission user
+   *
+   * @apiHeader {String} Authorization  User's access token
+   *
+   * @apiSuccess {String}  id         ImageImportOperation's ID
+   *
+   * @apiError (Unauthorized 401) Unauthorized Only authenticated users can access the data
+   * @apiError (Forbidden 403)    Forbidden    Only user with same id or admins can access the data
+   * @apiError (Not Found 404)    NotFound     User does not exist
+   */
+  .put(controller.finalizeOrUpdate);
 
 module.exports = router;
