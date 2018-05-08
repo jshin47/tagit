@@ -8,6 +8,9 @@ const importedImageSchema = new mongoose.Schema({
   displayName: {
     type: String,
   },
+  sha1Hash: {
+    type: String,
+  },
   importOperation: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'ImageImportOperation'
