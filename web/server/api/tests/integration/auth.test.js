@@ -4,8 +4,8 @@ const httpStatus = require('http-status');
 const { expect } = require('chai');
 const sinon = require('sinon');
 const app = require('../../../index');
-const User = require('../../models/user.model');
-const RefreshToken = require('../../models/refreshToken.model');
+const User = require('../../../models/user.model');
+const RefreshToken = require('../../../models/refreshToken.model');
 const authProviders = require('../../services/authProviders');
 
 const sandbox = sinon.createSandbox();

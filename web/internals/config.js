@@ -21,6 +21,7 @@ const ReactBoilerplate = {
        * by listing them here.
        */
       exclude: [
+        'agenda',
         'aws-sdk',
         'axios',
         'bcryptjs',
@@ -42,6 +43,7 @@ const ReactBoilerplate = {
         'express-validation',
         'helmet',
         'http-status',
+        'images-scraper',
         'ip',
         'joi',
         'jwt-simple',

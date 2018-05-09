@@ -2,9 +2,10 @@ const httpStatus = require('http-status');
 const { omit } = require('lodash');
 const fs = require('fs');
 const crypto = require('crypto');
-const ImportedImage = require('../models/importedImage.model');
-const ImageImportOperation = require('../models/imageImportOperation.model');
+const ImportedImage = require('../../models/importedImage.model');
+const ImageImportOperation = require('../../models/imageImportOperation.model');
 const { handler: errorHandler } = require('../middlewares/error');
+const agenda = require('../../agenda-worker');
 
 function checksumFile(hashName, path) {
   return new Promise((resolve, reject) => {
@@ -31,30 +32,26 @@ exports.get = async (req, res, next) => {
 };
 
 /**
- * Create new image import operation
+ * Create new imported image
  * @public
  */
 exports.create = async (req, res, next) => {
   try {
-
     const existingOperation = await ImageImportOperation.get(req.body.importOperation);
-    console.log(existingOperation);
 
     if (!existingOperation || existingOperation.finishedAt) {
       res.status(httpStatus.NOT_ACCEPTABLE);
-      res.end();
+      return res.end();
     } else {
       const { file } = req;
-
       const sha1Hash = await checksumFile('sha1', file.path);
-
       const importedImage = new ImportedImage({
         ...req.body,
         sha1Hash,
       });
       const savedImportedImage = await importedImage.save();
       res.status(httpStatus.CREATED);
-      res.json(savedImportedImage);
+      return res.json(savedImportedImage);
     }
   } catch (error) {
     next(error);

@@ -171,6 +171,7 @@
   "dllPlugin": {
     "path": "node_modules/react-boilerplate-dlls",
     "exclude": [
+      "agenda",
       "aws-sdk",
       "axios",
       "bcryptjs",
@@ -192,6 +193,7 @@
       "express-validation",
       "helmet",
       "http-status",
+      "images-scraper",
       "ip",
       "joi",
       "jwt-simple",
@@ -249,6 +251,7 @@
     "testRegex": "tests/.*\\.test\\.js$"
   },
   "dependencies": {
+    "agenda": "^1.0.3",
     "aws-sdk": "^2.233.1",
     "axios": "^0.18.0",
     "babel-polyfill": "6.23.0",
@@ -274,6 +277,7 @@
     "history": "4.6.3",
     "hoist-non-react-statics": "2.1.1",
     "http-status": "^1.1.0",
+    "images-scraper": "^2.0.11",
     "immutable": "3.8.1",
     "intl": "1.2.5",
     "invariant": "2.2.2",

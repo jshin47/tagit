@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
 const httpStatus = require('http-status');
 const moment = require('moment-timezone');
-const APIError = require('../utils/APIError');
+const APIError = require('../api/utils/APIError');
 
-const { env } = require('../../config/vars');
+const { env } = require('../config/vars');
 
 const imageImportOperationSchema = new mongoose.Schema({
   displayName: {

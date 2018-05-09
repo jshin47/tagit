@@ -1,19 +1,25 @@
 const mongoose = require('mongoose');
 const moment = require('moment-timezone');
-const APIError = require('../utils/APIError');
+const APIError = require('../api/utils/APIError');
 
-const { env } = require('../../config/vars');
+const { env } = require('../config/vars');
 
 const importedImageSchema = new mongoose.Schema({
-  displayName: {
-    type: String,
-  },
   sha1Hash: {
     type: String,
   },
   importOperation: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'ImageImportOperation'
+  },
+  localPath: {
+    type: String,
+  },
+  originalFileName: {
+    type: String,
+  },
+  metadata: {
+    type: mongoose.Schema.Types.Mixed,
   },
 });
 
@@ -29,10 +35,7 @@ importedImageSchema.statics = {
           return importedImage;
         }
 
-        throw new APIError({
-          message: 'Imported image does not exist',
-          status: httpStatus.NOT_FOUND,
-        });
+        throw 'error';
       }
     } catch (error) {
       throw error;

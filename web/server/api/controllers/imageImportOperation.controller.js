@@ -1,6 +1,6 @@
 const httpStatus = require('http-status');
 const { omit } = require('lodash');
-const ImageImportOperation = require('../models/imageImportOperation.model');
+const ImageImportOperation = require('../../models/imageImportOperation.model');
 const { handler: errorHandler } = require('../middlewares/error');
 
 exports.get = async (req, res, next) => {
@@ -10,7 +10,7 @@ exports.get = async (req, res, next) => {
     if (importOperation) {
       res.json(importOperation);
     } else {
-      next('Not found');
+      res.status(httpStatus.NOT_FOUND).end();
     }
   } catch (e) {
     next(e);
@@ -32,11 +32,16 @@ exports.create = async (req, res, next) => {
   }
 };
 
+/**
+ * Finalizes or updates an image import operation
+ * @public
+ */
 exports.finalizeOrUpdate = async (req, res, next) => {
   console.log(req.query);
   if (req.query.finalize) {
     exports.finalize(req, res, next);
   } else {
+    // not implemented!!!!!11111
     next();
   }
 };
