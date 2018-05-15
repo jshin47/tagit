@@ -4,46 +4,35 @@ const APIError = require('../api/utils/APIError');
 
 const { env } = require('../config/vars');
 
-const importedImageSchema = new mongoose.Schema({
+const datasetImageSchema = new mongoose.Schema({
   sha1Digest: {
     type: String,
   },
   s3Key: {
     type: String,
   },
-  importOperation: {
+  importedImages: [{
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'ImageImportOperation'
-  },
-  localPath: {
-    type: String,
-  },
+    ref: 'ImportedImage',
+  }],
   originalFileName: {
     type: String,
-  },
-  processedAt: {
-    type: Date,
   },
   metadata: {
     type: mongoose.Schema.Types.Mixed,
   },
-}, {
-  timestamps: true,
 });
 
-importedImageSchema.statics = {
+datasetImageSchema.statics = {
   async retrieve(id) {
     try {
-      let importedImage;
+      let datasetImage;
 
       if (mongoose.Types.ObjectId.isValid(id)) {
-        importedImage = await this.findById(id).exec();
-
-        if (importedImage) {
-          return importedImage;
-        }
-
-        throw 'error';
+        datasetImage = await this.findById(id).exec();
+        return datasetImage;
+      } else {
+        throw new Error('Invalid object id');
       }
     } catch (error) {
       throw error;
@@ -51,4 +40,4 @@ importedImageSchema.statics = {
   },
 }
 
-module.exports = mongoose.model('ImportedImage', importedImageSchema);
+module.exports = mongoose.model('DatasetImage', datasetImageSchema);

@@ -18,13 +18,16 @@ const importedImageZipSchema = new mongoose.Schema({
   originalFileName: {
     type: String,
   },
+  fileName: {
+    type: String,
+  },
   metadataMap: {
     type: mongoose.Schema.Types.Mixed,
   },
 });
 
 importedImageZipSchema.statics = {
-  async get(id) {
+  async retrieve(id) {
     try {
       let importedImageZip;
 

@@ -13,7 +13,10 @@ const imageImportOperationSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
   },
-  finishedAt: {
+  finalizedAt: {
+    type: Date,
+  },
+  processedAt: {
     type: Date,
   },
 }, {
@@ -35,7 +38,7 @@ imageImportOperationSchema.virtual('importedImages', {
 
 imageImportOperationSchema.statics = {
 
- async get(id) {
+ async retrieve(id) {
    try {
      let imageImportOperation;
 

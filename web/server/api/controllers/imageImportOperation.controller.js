@@ -2,11 +2,12 @@ const httpStatus = require('http-status');
 const { omit } = require('lodash');
 const ImageImportOperation = require('../../models/imageImportOperation.model');
 const { handler: errorHandler } = require('../middlewares/error');
+const agenda = require('../../agenda-worker');
 
 exports.get = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const importOperation = await ImageImportOperation.get(id);
+    const importOperation = await ImageImportOperation.retrieve(id);
     if (importOperation) {
       res.json(importOperation);
     } else {
@@ -53,9 +54,12 @@ exports.finalizeOrUpdate = async (req, res, next) => {
 exports.finalize = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const imageImportOperation = await ImageImportOperation.get(id);
-    imageImportOperation.finishedAt = new Date();
+    const imageImportOperation = await ImageImportOperation.retrieve(id);
+    imageImportOperation.finalizedAt = Date.now();
     const savedImageImportOperation = await imageImportOperation.save();
+    agenda.now('image import operation - process', {
+      imageImportOperationId: id,
+    });
     res.status(httpStatus.OK);
     res.json(savedImageImportOperation);
   } catch (error) {

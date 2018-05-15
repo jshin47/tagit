@@ -29,6 +29,15 @@ const imageScrapeOperationSchema = new mongoose.Schema({
   timeout: {
     type: Number,
   },
+  results: [{
+    type: mongoose.Schema.Types.Mixed,
+  }],
+  importOperation: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'ImageImportOperation',
+  },
+}, {
+  timestamps: true,
 });
 
 imageScrapeOperationSchema.statics = {
@@ -51,3 +60,4 @@ imageScrapeOperationSchema.statics = {
   }
 };
 
+module.exports = mongoose.model('ImageScrapeOperation', imageScrapeOperationSchema);

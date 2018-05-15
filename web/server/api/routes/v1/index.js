@@ -4,6 +4,8 @@ const authRoutes = require('./auth.route');
 
 const imageImportOperationRoutes = require('./imageImportOperation.route');
 const importedImageRoutes = require('./importedImage.route');
+const importedImageZipRoutes = require('./importedImageZip.route');
+const imageScrapeOperationRoutes = require('./imageScrapeOperation.route');
 
 const router = express.Router();
 
@@ -22,5 +24,7 @@ router.use('/auth', authRoutes);
 
 router.use('/imageImportOperations', imageImportOperationRoutes);
 router.use('/importedImages', importedImageRoutes);
+router.use('/importedImageZips', importedImageZipRoutes);
+router.use('/imageScrapeOperations', imageScrapeOperationRoutes);
 
 module.exports = router;
