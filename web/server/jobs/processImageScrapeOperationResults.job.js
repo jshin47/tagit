@@ -10,8 +10,8 @@ const ImageScrapeOperation = require('../models/imageScrapeOperation.model');
 const ImportedImageModel = require('../models/importedImage.model');
 const ImportedImageZip = require('../models/importedImageZip.model');
 
-const http = require('http');
-const https = require('https');
+const http = require('follow-redirects').http;
+const https = require('follow-redirects').https;
 
 const s3 = new AWS.S3({});
 
@@ -21,18 +21,19 @@ module.exports = function (agenda) {
   agenda.define('image scrape operation - process results', function (job, done) {
 
     let scrapeOp;
+    let allPromises;
 
     return ImageScrapeOperation
       .retrieve(job.attrs.data.imageScrapeOperationId)
       .then((imageScrapeOperation) => {
         scrapeOp = imageScrapeOperation;
 
-        Promise.all(imageScrapeOperation.results.map((result) => new Promise(((resolve, reject) => {
+        allPromises = imageScrapeOperation.results.map((result) => new Promise(((resolve, reject) => {
 
           const r = (result.url.startsWith('https')) ? https : http;
 
           r.get(result.url)
-            .on('error', console.log)
+            .on('error', reject)
             .on('response', (response) => {
               if (response.statusCode === 200) {
                 const fileName = path.basename(result.url);
@@ -52,7 +53,7 @@ module.exports = function (agenda) {
                   Key: s3Key,
                 }, function (err, data) {
                   if (err) {
-                    reject();
+                    reject(err);
                   } else {
 
                     var importedImage = new ImportedImageModel({
@@ -61,17 +62,23 @@ module.exports = function (agenda) {
                       s3Key,
                     })
 
-                    importedImage.save().then(() => resolve(data));
+                    importedImage.save().then(() => resolve(data)).catch(reject);
                   }
                 });
+              } else {
+                resolve();
               }
             });
-        })))).then((allResults) => {
+        })));
+
+        return Promise.all(allPromises)
+          .then((allResults) => {
           console.log('all done!');
           console.log(allResults);
           done();
-        }).error((err) => {
+        }).catch((err) => {
           console.error(err);
+          done(err);
         });
 
       })

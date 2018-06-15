@@ -36,7 +36,8 @@ exports.get = async (req, res, next) => {
  * @public
  */
 exports.search = async (req, res, next) => {
-
+  const found = await ImportedImage.find().exec();
+  res.json(found);
 };
 
 /**

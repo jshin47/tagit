@@ -50,7 +50,7 @@ module.exports = function (agenda) {
         }
 
       })
-      .then(done)
+      .then(() => done())
       .catch((e) => done(e || 'Unknown error'));
   });
 };

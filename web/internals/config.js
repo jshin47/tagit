@@ -43,6 +43,7 @@ const ReactBoilerplate = {
         'express-session',
         'express-validation',
         'file-type',
+        'follow-redirects',
         'helmet',
         'http-status',
         'images-scraper',

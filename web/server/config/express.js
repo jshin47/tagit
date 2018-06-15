@@ -6,6 +6,8 @@ const methodOverride = require('method-override');
 const cors = require('cors');
 const helmet = require('helmet');
 const passport = require('passport');
+const resolve = require('path').resolve;
+const setup = require('../middlewares/frontendMiddleware');
 const routes = require('../api/routes/v1');
 const { logs } = require('./vars');
 const strategies = require('./passport');
@@ -16,6 +18,13 @@ const error = require('../api/middlewares/error');
 * @public
 */
 const app = express();
+
+// In production we need to pass these values in instead of relying on webpack
+setup(app, {
+  outputPath: resolve(process.cwd(), 'build'),
+  publicPath: '/',
+});
+
 
 // request logging. dev: console | production: file
 app.use(morgan(logs));

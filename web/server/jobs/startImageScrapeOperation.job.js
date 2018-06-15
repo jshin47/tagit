@@ -28,7 +28,6 @@ module.exports = function (agenda) {
       .retrieve(job.attrs.data.imageScrapeOperationId)
       .then((imageScrapeOperation) => {
         scrapeOp = imageScrapeOperation;
-
         switch (imageScrapeOperation.source) {
           case 'google': {
             return GoogleScraper.list({
@@ -67,7 +66,7 @@ module.exports = function (agenda) {
         agenda.now('image scrape operation - process results', {
           imageScrapeOperationId: job.attrs.data.imageScrapeOperationId,
         });
-        done();
+        return done();
       });
 
   });

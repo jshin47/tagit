@@ -14,9 +14,9 @@ agenda.on('ready', function () {
   console.log('agenda worker started');
 
   //todo remove
-  agenda.cancel({}, (a,b) => {
-    console.log(`canceled ${a} ${b}`);
-  });
+  // agenda.cancel({}, (a,b) => {
+  //   console.log(`canceled ${a} ${b}`);
+  // });
 });
 
 module.exports = agenda;

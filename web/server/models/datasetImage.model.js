@@ -21,6 +21,8 @@ const datasetImageSchema = new mongoose.Schema({
   metadata: {
     type: mongoose.Schema.Types.Mixed,
   },
+}, {
+  timestamps: true,
 });
 
 datasetImageSchema.statics = {
